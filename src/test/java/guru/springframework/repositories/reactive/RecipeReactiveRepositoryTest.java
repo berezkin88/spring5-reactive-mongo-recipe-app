@@ -8,28 +8,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @DataMongoTest
 public class RecipeReactiveRepositoryTest {
 
     @Autowired
-    RecipeReactiveRepository repository;
+    RecipeReactiveRepository recipeReactiveRepository;
 
     @Before
     public void setUp() throws Exception {
-        repository.deleteAll().block();
+        recipeReactiveRepository.deleteAll().block();
     }
 
     @Test
-    public void testSave() {
+    public void testRecipeSave() throws Exception {
         Recipe recipe = new Recipe();
+        recipe.setDescription("Yummy");
 
-        repository.save(recipe).block();
+        recipeReactiveRepository.save(recipe).block();
 
-        Long actual = repository.count().block();
+        Long count = recipeReactiveRepository.count().block();
 
-        assertThat(actual).isEqualTo(1L);
+        assertEquals(Long.valueOf(1L), count);
     }
 }

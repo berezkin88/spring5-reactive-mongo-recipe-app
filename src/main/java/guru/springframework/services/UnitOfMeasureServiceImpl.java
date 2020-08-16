@@ -12,22 +12,22 @@ import reactor.core.publisher.Flux;
 @Service
 public class UnitOfMeasureServiceImpl implements UnitOfMeasureService {
 
-    private final UnitOfMeasureReactiveRepository unitOfMeasureRepository;
+    private final UnitOfMeasureReactiveRepository unitOfMeasureReactiveRepository;
     private final UnitOfMeasureToUnitOfMeasureCommand unitOfMeasureToUnitOfMeasureCommand;
 
-    public UnitOfMeasureServiceImpl(UnitOfMeasureReactiveRepository unitOfMeasureRepository, UnitOfMeasureToUnitOfMeasureCommand unitOfMeasureToUnitOfMeasureCommand) {
-        this.unitOfMeasureRepository = unitOfMeasureRepository;
+    public UnitOfMeasureServiceImpl(UnitOfMeasureReactiveRepository unitOfMeasureReactiveRepository, UnitOfMeasureToUnitOfMeasureCommand unitOfMeasureToUnitOfMeasureCommand) {
+        this.unitOfMeasureReactiveRepository = unitOfMeasureReactiveRepository;
         this.unitOfMeasureToUnitOfMeasureCommand = unitOfMeasureToUnitOfMeasureCommand;
     }
 
     @Override
     public Flux<UnitOfMeasureCommand> listAllUoms() {
 
-        return unitOfMeasureRepository
-            .findAll()
-            .map(unitOfMeasureToUnitOfMeasureCommand::convert);
+       return unitOfMeasureReactiveRepository
+                .findAll()
+                .map(unitOfMeasureToUnitOfMeasureCommand::convert);
 
-//        return StreamSupport.stream(unitOfMeasureRepository.findAll()
+//        return StreamSupport.stream(unitOfMeasureReactiveRepository.findAll()
 //                .spliterator(), false)
 //                .map(unitOfMeasureToUnitOfMeasureCommand::convert)
 //                .collect(Collectors.toSet());

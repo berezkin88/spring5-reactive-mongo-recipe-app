@@ -8,41 +8,42 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @DataMongoTest
 public class CategoryReactiveRepositoryTest {
 
     @Autowired
-    CategoryReactiveRepository repository;
+    CategoryReactiveRepository categoryReactiveRepository;
 
     @Before
-    public void setUp() {
-        repository.deleteAll().block();
+    public void setUp() throws Exception {
+        categoryReactiveRepository.deleteAll().block();
     }
 
     @Test
-    public void testFindByDescription() {
+    public void testSave() throws Exception {
         Category category = new Category();
-        category.setDescription("foo");
+        category.setDescription("Foo");
 
-        repository.save(category).block();
+        categoryReactiveRepository.save(category).block();
 
-        Category actual = repository.findByDescription("foo").block();
+        Long count = categoryReactiveRepository.count().block();
 
-        assertThat(actual).isNotNull();
+        assertEquals(Long.valueOf(1L), count);
     }
 
     @Test
-    public void testSave() {
+    public void testFindByDescription() throws Exception {
         Category category = new Category();
-        category.setDescription("foo");
+        category.setDescription("Foo");
 
-        repository.save(category).block();
+        categoryReactiveRepository.save(category).then().block();
 
-        Long actual = repository.count().block();
+        Category fetchedCat = categoryReactiveRepository.findByDescription("Foo").block();
 
-        assertThat(actual).isEqualTo(1L);
+        assertNotNull(fetchedCat.getId());
     }
 }
